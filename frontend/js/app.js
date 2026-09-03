@@ -102,6 +102,24 @@ function renderDisputeTable() {
     filtered = allDisputes.filter(d => d.decision_status === 'upload_failed_review');
   }
 
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7">
+          <div class="empty-state-card">
+            <div class="empty-state-icon">🛡️</div>
+            <div class="empty-state-title">Your Margin Is Protected — No Active Disputes</div>
+            <div class="empty-state-desc">RazorBack.ai is listening for incoming Razorpay webhooks. Seed a test scenario below to observe the autonomous resolution pipeline.</div>
+            <button class="btn-primary" onclick="seedDemoDispute('auto_contest_winnable')" style="display: inline-flex; align-items: center; gap: 0.5rem; margin: 0 auto;">
+              <span>⚡ Seed High-Confidence Dispute</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
   const now = Math.floor(Date.now() / 1000);
 
   tbody.innerHTML = filtered.map(d => {
@@ -203,10 +221,36 @@ async function openDisputeModal(disputeId) {
     const data = await res.json();
     currentActiveDisputeDetail = data;
 
-    // Header Info
+    // Header Info & Dynamic SLA Pill
     document.getElementById('modalDisputeId').textContent = data.dispute.id;
     document.getElementById('modalSubhead').textContent = 
-      `Amount: ₹${data.dispute.amount.toLocaleString('en-IN')} • Reason: ${data.dispute.reason_code} • Phase: ${data.dispute.phase} • SLA: ${data.time_remaining_hours}h left`;
+      `Amount: ₹${data.dispute.amount.toLocaleString('en-IN')} • Reason: ${data.dispute.reason_code} • Phase: ${data.dispute.phase}`;
+
+    const hours = data.time_remaining_hours;
+    const slaPill = document.getElementById('modalSlaUrgencyPill');
+    if (slaPill) {
+      slaPill.className = hours <= 12 ? 'badge-sla-urgent' : (hours <= 24 ? 'badge-sla-warning' : 'badge-sla-calm');
+      slaPill.textContent = hours <= 12 ? `🚨 ${hours.toFixed(1)}h URGENT DEADLINE` : (hours <= 24 ? `⚠️ ${hours.toFixed(1)}h remaining` : `⏱️ ${hours.toFixed(1)}h remaining`);
+    }
+
+    // Sticky Executive Verdict Banner
+    const dec = data.decision;
+    const execStatus = document.getElementById('execVerdictStatus');
+    const execRule = document.getElementById('execVerdictRule');
+    const execExpl = document.getElementById('execVerdictExplanation');
+    const execProb = document.getElementById('execVerdictWinProb');
+    const execBar = document.getElementById('execVerdictWinBar');
+
+    if (dec) {
+      const p = (dec.win_probability * 100).toFixed(1);
+      execStatus.textContent = dec.action.toUpperCase().replace(/_/g, ' ');
+      execStatus.className = 'status-pill-badge ' + (dec.action === 'contest_auto' ? 'badge-auto-contested' : (dec.action === 'contest_draft' ? 'badge-draft-pending' : 'badge-auto-accepted'));
+      execRule.textContent = dec.rule_fired;
+      execExpl.textContent = dec.explanation;
+      execProb.textContent = `${p}% Win Probability`;
+      execBar.style.width = `${p}%`;
+      execBar.style.background = p >= 65 ? 'linear-gradient(90deg, #0284c7, #10b981)' : (p >= 40 ? 'linear-gradient(90deg, #d97706, #f59e0b)' : '#e11d48');
+    }
 
     // 1. Evidence Packet Tab
     renderEvidenceTab(data);
@@ -547,3 +591,13 @@ function showToast(message, type = 'info') {
     toast.remove();
   }, 3500);
 }
+
+// 8. Keyboard Navigation & Accessibility (Pass 7)
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('disputeModal');
+    if (modal && modal.classList.contains('open')) {
+      closeModal();
+    }
+  }
+});

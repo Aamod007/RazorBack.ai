@@ -130,6 +130,38 @@ Observe where they hesitate, what evidence documents they manually double-check,
 ### 3. Deferred Scope (to TODOS.md)
 - **Preemptive Buyer WhatsApp Dispute Preemption:** Upstream buyer messaging via Meta WhatsApp Business API before chargeback initiation at the bank (deferred to v2.0 roadmap).
 
+## Design Review Specifications (Locked via /plan-design-review)
+
+### 1. Information Architecture & 3-Second Scan (10/10)
+- **Executive Verdict Banner:** Sticky modal header displaying Dispute Status, Amount in INR, Decision Rule, and XGBoost Win Probability bar at the top of the detail modal.
+- **3-Tier Hierarchy:** Primary (Verdict & Win Probability) -> Secondary (Evidence Checklist with green/amber indicators) -> Tertiary (Technical audit logs & raw JSON nested in collapsible accordions).
+
+### 2. Interaction State Coverage & Empty States (10/10)
+- **Guided Empty State:** Zero-data dashboard replaces blank table space with a branded protective shield, explanatory copy, and a 1-click CTA button to seed an archetypal test dispute.
+- **Shimmer Skeletons:** Table data fetches render smooth CSS pulse skeletons to eliminate layout shifts during refresh intervals.
+
+### 3. Emotional Arc & SLA Countdown Urgency (10/10)
+- **Dynamic SLA Heartbeat:** Color-coded countdown badges (`> 24h` calm slate, `12h - 24h` alert amber, `< 12h` urgent pulsing crimson) conveying visceral situational urgency.
+- **Margin Relief Badges:** Celebrates recovered capital with explicit 'Contested & Protected' states and instant link to the cryptographic Evidence Binder.
+
+### 4. Design System & Visual Polish (10/10)
+- **Luminous Button Hierarchy:** Electric blue primary button glow, warning amber for concession, and outline style for secondary exports.
+- **Iconized Status Pills:** Colorblind-safe status pills prefixed with icons (`⚡ Auto-Contested`, `🔒 Draft Pending`, `❌ Conceded`).
+- **Custom Scrollbars:** Styled slim scrollbars matching the dark-mode aesthetic.
+
+### 5. AI Slop Detection & Removal (10/10)
+- **Enterprise Treasury Language:** Replaced hackathon meta-commentary ("Track Bar Demands") with authentic institutional risk terminology: "P&L Impact & False-Positive Cost Analysis".
+- **Net Capital Protected Callout:** Direct calculation of recovered capital minus operational costs.
+
+### 6. Responsive Viewport Ergonomics (10/10)
+- **Mobile Card Transformation:** Below 640px, wide tables reflow into touch-friendly cards with guaranteed 48px touch targets for thumb navigation.
+- **Mobile Bottom-Sheet:** Detail modal slides up from screen bottom on mobile viewports.
+
+### 7. Accessibility & Edge Case Hardening (10/10)
+- **Keyboard Ergonomics:** `Escape` key immediately closes the active modal; `:focus-visible` rings provide accessible keyboard focus navigation.
+- **ARIA Standards:** `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` semantics.
+- **Truncation Guards:** CSS `text-overflow: ellipsis` protects against 50-character customer names and extreme INR currency amounts.
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
@@ -137,9 +169,9 @@ Observe where they hesitate, what evidence documents they manually double-check,
 | CEO Review | `/plan-ceo-review` | Scope & strategy | 1 | CLEAR | 4 proposals, 3 accepted, 1 deferred |
 | Codex Review | `/codex review` | Independent 2nd opinion | 0 | — | — |
 | Eng Review | `/plan-eng-review` | Architecture & tests (required) | 1 | CLEAR | 5 issues, 0 critical gaps |
-| Design Review | `/plan-design-review` | UI/UX gaps | 0 | — | — |
+| Design Review | `/plan-design-review` | UI/UX gaps | 1 | CLEAR | 7 passes, all 10/10, 0 gaps |
 | DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
 
-VERDICT: CEO + ENG CLEARED — ready to implement
+VERDICT: CEO + ENG + DESIGN CLEARED — ready to implement
 
 NO UNRESOLVED DECISIONS
