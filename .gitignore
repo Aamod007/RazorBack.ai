@@ -1,0 +1,30 @@
+# Environment & Secrets
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+*.sqlite3
+*.db
+backend/data/*.db
+
+# Node / Bun
+node_modules/
+dist/
+bun.lockb
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# gstack & AI agent skills
+gstack/
+.agents/
